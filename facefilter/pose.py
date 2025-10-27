@@ -41,7 +41,22 @@ def rvec_to_euler(rvec: np.ndarray) -> Tuple[float, float, float]:
     """
     R, _ = cv2.Rodrigues(rvec)
     yaw, pitch, roll = _euler_from_R(R)
-    ypr = np.degrees([yaw, pitch, roll])
+    ypr = np.degrees([yaw, pitch, roll]).astype(float)
+
+    # Normalize to intuitive front-facing solution to avoid 180° flips.
+    # If yaw is beyond ±90°, use the equivalent representation with
+    # yaw within [-90°, 90°] and invert pitch sign accordingly.
+    if abs(ypr[0]) > 90.0:
+        ypr[0] = np.sign(ypr[0]) * (180.0 - abs(ypr[0]))
+        ypr[1] = -ypr[1]
+        # roll often remains near zero for front faces; keep as-is
+
+    # Wrap roll to [-180, 180]
+    if ypr[2] > 180.0:
+        ypr[2] -= 360.0
+    elif ypr[2] < -180.0:
+        ypr[2] += 360.0
+
     return float(ypr[0]), float(ypr[1]), float(ypr[2])
 
 
