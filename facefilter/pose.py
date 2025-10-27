@@ -18,24 +18,19 @@ from .types import PoseResult
 
 
 def _euler_from_R(R: np.ndarray) -> Tuple[float, float, float]:
-    """Compute yaw(Y), pitch(X), roll(Z) using ZYX (roll→yaw→pitch) convention.
+    """Compute yaw(Y), pitch(X), roll(Z) using a common camera convention.
 
-    Stable extraction that keeps frontal faces near zero angles:
-      R = Rz(roll) * Ry(yaw) * Rx(pitch)
+    Formulas keep pitch within [-pi/2, pi/2] to avoid 180° flips:
+        pitch = atan2(-R[2,0], sqrt(R[2,1]^2 + R[2,2]^2))
+        yaw   = atan2(R[2,1], R[2,2])
+        roll  = atan2(R[1,0], R[0,0])
     Returns angles in radians.
     """
     assert R.shape == (3, 3)
-    sy = np.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
-    singular = sy < 1e-6
-    if not singular:
-        yaw = np.arctan2(-R[2, 0], sy)
-        pitch = np.arctan2(R[2, 1], R[2, 2])
-        roll = np.arctan2(R[1, 0], R[0, 0])
-    else:
-        # Gimbal lock: sy ~ 0
-        yaw = np.arctan2(-R[2, 0], sy)
-        pitch = np.arctan2(-R[1, 2], R[1, 1])
-        roll = 0.0
+    cy = np.sqrt(R[2, 1] * R[2, 1] + R[2, 2] * R[2, 2])
+    pitch = np.arctan2(-R[2, 0], cy)
+    yaw = np.arctan2(R[2, 1], R[2, 2])
+    roll = np.arctan2(R[1, 0], R[0, 0])
     return float(yaw), float(pitch), float(roll)
 
 
