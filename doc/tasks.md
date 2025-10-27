@@ -1,14 +1,14 @@
 # Task Breakdown — Frontal Face Filtering Pipeline
 
 ## 1. Project Scaffolding & Utilities
-- [ ] Create module layout (`loader.py`, `pose.py`, `filters.py`, `writers.py`, etc.) and shared `config.py` loader.
-- [ ] Define dataclasses/typed dicts for intermediate artifacts (image metadata, landmarks, pose result).
-- [ ] Implement YAML + CLI config merging helper (defaults → YAML → CLI overrides) with deterministic seeding.
+- [✅] Create module layout (`loader.py`, `pose.py`, `filters.py`, `writers.py`, etc.) and shared `config.py` loader.
+- [✅] Define dataclasses/typed dicts for intermediate artifacts (image metadata, landmarks, pose result).
+- [✅] Implement YAML + CLI config merging helper (defaults → YAML → CLI overrides) with deterministic seeding.
 
 ## 2. Image Loader
-- [ ] Implement recursive image enumeration with extension whitelist and optional `max_files` cap.
-- [ ] Add OpenCV-based image reader with logging for unreadable files and Unicode-safe paths.
-- [ ] Emit image size metadata needed by downstream components.
+- [✅] Implement recursive image enumeration with extension whitelist and optional `max_files` cap.
+- [✅] Add OpenCV-based image reader with logging for unreadable files and Unicode-safe paths.
+- [✅] Emit image size metadata needed by downstream components.
 
 ## 3. Face Mesh Integration
 - [ ] Wrap MediaPipe FaceMesh with configurable options (static image mode, refinement toggle).
