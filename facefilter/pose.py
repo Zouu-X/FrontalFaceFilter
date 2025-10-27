@@ -18,26 +18,23 @@ from .types import PoseResult
 
 
 def _euler_from_R(R: np.ndarray) -> Tuple[float, float, float]:
-    """Compute yaw(Y), pitch(X), roll(Z) in radians from rotation matrix.
+    """Compute yaw(Y), pitch(X), roll(Z) using ZYX (roll→yaw→pitch) convention.
 
-    Uses the Z-Y-X composition (roll, yaw, pitch):
+    Stable extraction that keeps frontal faces near zero angles:
       R = Rz(roll) * Ry(yaw) * Rx(pitch)
-    Formulas are robust for general case; handles gimbal lock when |R[2,0]| ~ 1.
+    Returns angles in radians.
     """
     assert R.shape == (3, 3)
-    sy = -R[2, 0]
-    # cos(yaw) magnitude
-    cy = np.sqrt(max(0.0, 1.0 - sy * sy))
-
-    singular = cy < 1e-6
+    sy = np.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
+    singular = sy < 1e-6
     if not singular:
+        yaw = np.arctan2(-R[2, 0], sy)
         pitch = np.arctan2(R[2, 1], R[2, 2])
-        yaw = np.arctan2(sy, cy)
         roll = np.arctan2(R[1, 0], R[0, 0])
     else:
-        # Gimbal lock: set roll = 0 and derive pitch from other terms
+        # Gimbal lock: sy ~ 0
+        yaw = np.arctan2(-R[2, 0], sy)
         pitch = np.arctan2(-R[1, 2], R[1, 1])
-        yaw = np.arctan2(sy, cy)  # cy ~ 0
         roll = 0.0
     return float(yaw), float(pitch), float(roll)
 
@@ -49,7 +46,8 @@ def rvec_to_euler(rvec: np.ndarray) -> Tuple[float, float, float]:
     """
     R, _ = cv2.Rodrigues(rvec)
     yaw, pitch, roll = _euler_from_R(R)
-    return np.degrees([yaw, pitch, roll]).tolist()  # type: ignore[return-value]
+    ypr = np.degrees([yaw, pitch, roll])
+    return float(ypr[0]), float(ypr[1]), float(ypr[2])
 
 
 def estimate_pose(
@@ -105,4 +103,3 @@ def estimate_pose(
 
 
 __all__ = ["estimate_pose", "rvec_to_euler"]
-
