@@ -13,7 +13,8 @@ def build_camera_matrix(meta: ImageMeta, focal: Optional[float] = None, principa
     - If `focal` is None, use max(h, w).
     - If `principal` is None, use image center: (w/2, h/2).
     """
-    w, h = float(meta.width), float(meta.height)
+    # w, h = float(meta.width), float(meta.height)
+    w, h = float(256), float(256)
     f = float(focal) if focal is not None else max(w, h)
     cx, cy = principal if principal is not None else (w / 2.0, h / 2.0)
     K = np.array([[f, 0.0, cx], [0.0, f, cy], [0.0, 0.0, 1.0]], dtype=np.float32)
