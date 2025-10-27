@@ -17,6 +17,27 @@ DEFAULTS: Dict[str, Any] = {
         "output_dir": "outputs",
         "copy_accepted": False,
     },
+    "camera": {
+        # Focal length in pixels; default uses max(h, w) at runtime if None
+        "focal": None,
+        # Principal point; default uses image center (w/2, h/2)
+        "principal": None,
+        # Radial/tangential distortion coefficients (OpenCV order)
+        # k1, k2, p1, p2, k3, k4, k5, k6
+        "distortion": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    },
+    "pnp_template": {
+        # 3D template points in mm-like units: order must match keypoint selection
+        # [nose, chin, left_eye, right_eye, left_mouth, right_mouth]
+        "points": [
+            [0.0, 0.0, 0.0],
+            [0.0, -63.6, -12.5],
+            [-43.3, 32.7, -26.0],
+            [43.3, 32.7, -26.0],
+            [-28.9, -28.9, -24.1],
+            [28.9, -28.9, -24.1],
+        ],
+    },
     "thresholds": {
         "yaw": 15.0,
         "pitch": 10.0,
@@ -79,4 +100,3 @@ def merge_config(yaml_cfg: Mapping[str, Any] | None = None, cli_overrides: Mappi
 def load_and_merge(yaml_path: str | Path | None, cli_overrides: Mapping[str, Any] | None = None) -> Dict[str, Any]:
     yaml_cfg = load_yaml(yaml_path)
     return merge_config(yaml_cfg, cli_overrides)
-
