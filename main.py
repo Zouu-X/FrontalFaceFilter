@@ -98,17 +98,3 @@ if __name__ == "__main__":
     main()
 
 
-from facefilter.loader import ImageLoader
-from facefilter.facemesh import FaceMeshDetector, FaceMeshConfig
-
-
-loader = ImageLoader("/Users/xiangxzou/Desktop/nn_FACE")
-det = FaceMeshDetector(FaceMeshConfig())
-
-for path, img, meta in loader.iter_images():
-    with det as fm:
-        fl, det_info = fm.detect(img, meta)
-        if fl is None: print("No Face Detected")
-        else: print(fl.pixel.shape, det_info.bbox)
-        
-    break

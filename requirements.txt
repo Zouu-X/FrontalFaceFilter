@@ -1,7 +1,7 @@
 # Core dependencies for the Frontal Face Filtering pipeline
 # Install with: pip install -r requirements.txt
 
-numpy>=1.22
+numpy==1.26.4
 opencv-python>=4.8.0
 mediapipe
 PyYAML>=6.0
