@@ -11,6 +11,7 @@ from facefilter.facemesh import FaceMeshDetector, FaceMeshConfig
 from facefilter.keypoints import select_pnp_image_points, get_pnp_object_points
 from facefilter.camera import build_camera_matrix, get_dist_coeffs
 from facefilter.pose import estimate_pose
+from facefilter.filters import is_frontal
 
 
 def parse_args() -> argparse.Namespace:
@@ -79,6 +80,13 @@ def main():
     print("Landmarks:", fl.pixel.shape, det_info.bbox)
     print("Angles (deg): yaw=%.2f pitch=%.2f roll=%.2f" % (pose.yaw, pose.pitch, pose.roll))
     print("Reproj error:", pose.reproj_error)
+
+    decision = is_frontal(pose, cfg)
+    print(
+        "Frontal:", decision.is_frontal,
+        "Maybe:", decision.maybe_frontal,
+        "Reasons:", ",".join(decision.reasons) if decision.reasons else "-",
+    )
 
     if args.save_debug:
         out_path = str(args.save_debug)

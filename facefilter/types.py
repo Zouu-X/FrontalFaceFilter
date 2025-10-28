@@ -50,3 +50,9 @@ class PoseResult:
     reproj_error: Optional[float] = None
     reason: Optional[str] = None
 
+
+@dataclass
+class FrontalDecision:
+    is_frontal: bool
+    maybe_frontal: bool
+    reasons: List[str]

@@ -42,6 +42,11 @@ DEFAULTS: Dict[str, Any] = {
         "yaw": 15.0,
         "pitch": 10.0,
         "roll": 10.0,
+        # Soft band handling for maybe_frontal classification
+        # If exactly one angle exceeds by ≤ soft_band and the others are within near_zero,
+        # mark as maybe_frontal
+        "soft_band": 5.0,
+        "near_zero": 3.0,
         "min_face": 128,
         "min_blur": 100.0,
     },
